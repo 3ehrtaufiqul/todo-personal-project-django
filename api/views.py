@@ -1,11 +1,9 @@
-from django.http import Http404
-from rest_framework import generics, permissions, status
-from rest_framework.parsers import JSONParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.serializers import TodoSerializer
 
+from .auth.permissions import EditOwnerOnly
 from .models import Todo
 
 # def index(request):
@@ -13,7 +11,7 @@ from .models import Todo
 
 class TodoList(generics.ListCreateAPIView):
     "List all todos or create a new todo."
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
 
@@ -23,7 +21,7 @@ class TodoList(generics.ListCreateAPIView):
 
 class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
     "Retrieve, update, or delete a todo."
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, EditOwnerOnly]
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
     lookup_field = 'id'
