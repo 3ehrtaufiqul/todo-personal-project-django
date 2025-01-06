@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.serializers import TodoSerializer
 
-from .auth.permissions import EditOwnerOnly
+from .permissions import EditOwnerOnly
 from .models import Todo
 
 # def index(request):
