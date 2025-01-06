@@ -12,6 +12,7 @@
 </head>
 
 <body ng-app="todoApp" ng-controller="todoController">
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <span class="navbar-brand mb-0 h1" href="#">Todo List</span>
@@ -31,8 +32,10 @@
       </div>
     </div>
   </nav>
+
+  <!-- Main Content -->
   <div class="m-3">
-    <button type="button" class="btn btn-primary">Create New Task</button>
+    <button type="button" class="btn btn-primary" ng-click="newTodo()">Create New Task</button>
     <table class="table">
       <thead>
         <tr>
@@ -44,42 +47,50 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Task 1</td>
-          <td>Task 1 Note</td>
-          <td>Not Finished</td>
+        <tr ng-repeat="todo in todoList">
+          <th scope="row" ng-bind="todo.id"></th>
+          <td ng-bind="todo.title"></td>
+          <td ng-bind="todo.note"></td>
+          <td ng-if="!todo.completed">Not Finished</td>
+          <td ng-if="todo.completed">Finished</td>
           <td>
-            <button type="button" class="btn btn-success">Mark as Done</button>
-            <button type="button" class="btn btn-primary">Edit</button>
-            <button type="button" class="btn btn-danger">Delete</button>
+            <button type="button" class="btn btn-success" ng-if="!todo.completed" ng-click="changeStatus(todo)">Mark as Done</button>
+            <button type="button" class="btn btn-warning" ng-if="todo.completed" ng-click="changeStatus(todo)">Mark as Not Done</button>
+            <button type="button" class="btn btn-primary" ng-click="editTodo(todo)">Edit</button>
+            <button type="button" class="btn btn-danger" ng-click="deleteTodo(todo)">Delete</button>
           </td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Task 2</td>
-          <td>Task 2 Note</td>
-          <td>Done</td>
-          <td>
-            <button type="button" class="btn btn-warning">Mark as Not Done</button>
-            <button type="button" class="btn btn-primary">Edit</button>
-            <button type="button" class="btn btn-danger">Delete</button>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Task 3</td>
-          <td>Task 3 Note</td>
-          <td>Done</td>
-          <td>
-            <button type="button" class="btn btn-warning">Mark as Not Done</button>
-            <button type="button" class="btn btn-primary">Edit</button>
-            <button type="button" class="btn btn-danger">Delete</button>
-          </td>
-        </tr>
       </tbody>
     </table>
   </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="todoDetailModal" tabindex="-1" aria-labelledby="todoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="todoModalLabel">New task</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Title:</label>
+              <input type="text" class="form-control" id="recipient-name" ng-model="newTodo.title" placeholder="Enter task title">
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Note:</label>
+              <textarea class="form-control" id="message-text" ng-model="newTodo.note" placeholder="Enter task note"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" ng-if="isNewTodo" ng-click="createTodo(newTodo)">Create new task</button>
+          <button type="button" class="btn btn-primary" ng-if="!isNewTodo" ng-click="updateTodo(newTodo)">Update task</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>

@@ -17,7 +17,10 @@ class TodoList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Use perform_create hook to associate the todo with the user that created it before saving it to the database.
-        serializer.save(user=self.request.user)
+        try:
+            serializer.save(user=self.request.user)
+        except ValueError:
+            serializer.save()
 
 class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
     "Retrieve, update, or delete a todo."
