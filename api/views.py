@@ -1,30 +1,27 @@
-from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from api.serializers import TodoSerializer
+from api.serializers import ProjectSerializer, TodoSerializer
 
+from .models import Project, Todo
 from .permissions import EditOwnerOnly
-from .models import Todo
 
 # def index(request):
 #     return HttpResponse("Hello, world. You're at the todo index.")
 
-class TodoList(generics.ListCreateAPIView):
-    "List all todos or create a new todo."
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+class TodoViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
-
-    def perform_create(self, serializer):
-        # Use perform_create hook to associate the todo with the user that created it before saving it to the database.
-        try:
-            serializer.save(user=self.request.user)
-        except ValueError:
-            serializer.save()
-
-class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
-    "Retrieve, update, or delete a todo."
-    # permission_classes = [IsAuthenticatedOrReadOnly, EditOwnerOnly]
-    queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
     lookup_field = 'id'
+
+    # def perform_create(self, serializer):
+    #     # Use perform_create hook to associate the todo with the user that created it before saving it to the database.
+    #     try:
+    #         serializer.save(user=self.request.user)
+    #     except ValueError:
+    #         serializer.save()
