@@ -33,34 +33,56 @@
     </div>
   </nav>
 
+  {% verbatim %}
   <!-- Main Content -->
   <div class="m-3">
-    <button type="button" class="btn btn-primary" ng-click="newTodo()">Create New Task</button>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Task</th>
-          <th scope="col">Note</th>
-          <th scope="col">Status</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="todo in todoList">
-          <th scope="row" ng-bind="todo.id"></th>
-          <td ng-bind="todo.title"></td>
-          <td ng-bind="todo.note"></td>
-          <td ng-if="!todo.completed">Not Finished</td>
-          <td ng-if="todo.completed">Finished</td>
-          <td>
-            <button type="button" class="btn btn-success" ng-if="!todo.completed" ng-click="changeStatus(todo)">Mark as Done</button>
-            <button type="button" class="btn btn-warning" ng-if="todo.completed" ng-click="changeStatus(todo)">Mark as Not Done</button>
-            <button type="button" class="btn btn-primary" ng-click="editTodo(todo)">Edit</button>
-            <button type="button" class="btn btn-danger" ng-click="deleteTodo(todo)">Delete</button>
-          </td>
-      </tbody>
-    </table>
+    <button type="button" class="btn btn-primary mb-2">Create New Project</button>
+    <div class="accordion mt-2" id="projectAccordion">
+      <div class="accordion-item" ng-repeat="project in projectList">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#project_{{project.id}}" aria-expanded="false" aria-controls="project_{{project.id}}"
+            ng-click="loadProjectTodo(project, $event)">
+            {{project.title}}
+          </button>
+        </h2>
+        <div id="project_{{project.id}}" class="accordion-collapse collapse" data-bs-parrent="#projectAccordion">
+          <div class="accordion-body">
+            <p>{{project.description}}</p>
+            <button type="button" class="btn btn-primary mb-2" ng-click="showModalCreateNewTodo(project)">Create New Task</button>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Task</th>
+                  <th scope="col">Note</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="todo in project.todoList">
+                  <th scope="row" ng-bind="todo.id"></th>
+                  <td ng-bind="todo.title"></td>
+                  <td ng-bind="todo.note"></td>
+                  <td ng-if="!todo.completed">Not Finished</td>
+                  <td ng-if="todo.completed">Finished</td>
+                  <td>
+                    <button type="button" class="btn btn-success" ng-if="!todo.completed"
+                      ng-click="changeStatus(todo)">Mark as
+                      Done</button>
+                    <button type="button" class="btn btn-warning" ng-if="todo.completed"
+                      ng-click="changeStatus(todo)">Mark as
+                      Not Done</button>
+                    <button type="button" class="btn btn-primary" ng-click="showModalEditTodo(todo, project)">Edit</button>
+                    <button type="button" class="btn btn-danger" ng-click="deleteTodo(todo, project)">Delete</button>
+                  </td>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Modal -->
@@ -72,28 +94,38 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <div class="mb-3">
+            <label class="col-form-label">Project:</label>
+            <p ng-bind="modalData.project.title"></p>
+          </div>
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Title:</label>
-              <input type="text" class="form-control" id="recipient-name" ng-model="newTodo.title" placeholder="Enter task title">
+              <label for="task-name" class="col-form-label">Title:</label>
+              <input type="text" class="form-control" id="task-name" ng-model="newTodo.title"
+                placeholder="Enter task title">
             </div>
             <div class="mb-3">
-              <label for="message-text" class="col-form-label">Note:</label>
-              <textarea class="form-control" id="message-text" ng-model="newTodo.note" placeholder="Enter task note"></textarea>
+              <label for="task-note" class="col-form-label">Note:</label>
+              <textarea class="form-control" id="task-note" ng-model="newTodo.note"
+                placeholder="Enter task note"></textarea>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success" ng-if="isNewTodo" ng-click="createTodo(newTodo)">Create new task</button>
-          <button type="button" class="btn btn-primary" ng-if="!isNewTodo" ng-click="updateTodo(newTodo)">Update task</button>
+          <button type="button" class="btn btn-success" ng-if="!modalData.isUpdate" ng-click="createTodo()">Create new
+            task</button>
+          <button type="button" class="btn btn-primary" ng-if="modalData.isUpdate" ng-click="updateTodo()">Update
+            task</button>
         </div>
       </div>
     </div>
   </div>
+  {% endverbatim %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="{% static 'js/index.js' %}"></script>
+
 </html>
