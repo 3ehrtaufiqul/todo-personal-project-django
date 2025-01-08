@@ -4,6 +4,7 @@ app.controller('todoController', function($scope, $http) {
     const projectAPIURL = '/api/project';
 
     const todoDetailModal = new bootstrap.Modal(document.getElementById('todoDetailModal'), {});
+    const projectDetailModal = new bootstrap.Modal(document.getElementById('projectDetailModal'), {});
 
     const loadAllProject = function() {
         $http.get(projectAPIURL).then(function(response) {
@@ -67,6 +68,51 @@ app.controller('todoController', function($scope, $http) {
     $scope.deleteTodo = function(todo, project) {
         $http.delete(`${todoAPIURL}/${todo.id}/`).then(function(_) {
             $scope.loadProjectTodo(project);
+        });
+    }
+
+    $scope.showModalCreateNewProject = function() {
+        console.log('showModalCreateNewProject pressed');
+        $scope.newProject = {
+            title: '',
+            description: '',
+        };
+        $scope.modalData = {
+            isUpdate: false
+        }
+        projectDetailModal.show();
+    }
+
+    $scope.createProject = function() {
+        const project = {
+            title: $scope.newProject.title,
+            description: $scope.newProject.description,
+        }
+
+        $http.post(projectAPIURL + '/', project).then(function(_) {
+            loadAllProject();
+            projectDetailModal.hide();
+        });
+    }
+
+    $scope.showModalEditProject = function(project) {
+        $scope.newProject = angular.copy(project);
+        $scope.modalData = {
+            isUpdate: true
+        }
+        projectDetailModal.show();
+    }
+
+    $scope.updateProject = function() {
+        $http.put(`${projectAPIURL}/${$scope.newProject.id}/`, $scope.newProject).then(function(_) {
+            loadAllProject();
+            projectDetailModal.hide();
+        });
+    }
+
+    $scope.deleteProject = function(project) {
+        $http.delete(`${projectAPIURL}/${project.id}/`).then(function(_) {
+            loadAllProject();
         });
     }
 

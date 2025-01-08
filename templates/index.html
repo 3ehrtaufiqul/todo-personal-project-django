@@ -36,7 +36,12 @@
   {% verbatim %}
   <!-- Main Content -->
   <div class="m-3">
-    <button type="button" class="btn btn-primary mb-2">Create New Project</button>
+    <div class="d-flex flex-row p-2">
+      <input class="rounded" type="search" placeholder="Search" aria-label="Search">
+      <button type="button" class="btn btn-outline-success ms-2">Search</button>
+      <button type="button" class="btn btn-primary ms-auto" ng-click="showModalCreateNewProject()">Create New
+        Project</button>
+    </div>
     <div class="accordion mt-2" id="projectAccordion">
       <div class="accordion-item" ng-repeat="project in projectList">
         <h2 class="accordion-header">
@@ -49,7 +54,12 @@
         <div id="project_{{project.id}}" class="accordion-collapse collapse" data-bs-parrent="#projectAccordion">
           <div class="accordion-body">
             <p>{{project.description}}</p>
-            <button type="button" class="btn btn-primary mb-2" ng-click="showModalCreateNewTodo(project)">Create New Task</button>
+            <div class="d-flex flex-row mb-2 gap-2">
+              <button type="button" class="btn btn-secondary" ng-click="showModalEditProject(project)">Edit</button>
+              <button type="button" class="btn btn-danger" ng-click="deleteProject(project)">Delete</button>
+            </div>
+            <button type="button" class="btn btn-primary mb-2" ng-click="showModalCreateNewTodo(project)">Create New
+              Task</button>
             <table class="table">
               <thead>
                 <tr>
@@ -74,7 +84,8 @@
                     <button type="button" class="btn btn-warning" ng-if="todo.completed"
                       ng-click="changeStatus(todo)">Mark as
                       Not Done</button>
-                    <button type="button" class="btn btn-primary" ng-click="showModalEditTodo(todo, project)">Edit</button>
+                    <button type="button" class="btn btn-secondary"
+                      ng-click="showModalEditTodo(todo, project)">Edit</button>
                     <button type="button" class="btn btn-danger" ng-click="deleteTodo(todo, project)">Delete</button>
                   </td>
               </tbody>
@@ -85,7 +96,7 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Todo Modal -->
   <div class="modal fade" id="todoDetailModal" tabindex="-1" aria-labelledby="todoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -116,6 +127,39 @@
             task</button>
           <button type="button" class="btn btn-primary" ng-if="modalData.isUpdate" ng-click="updateTodo()">Update
             task</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Modal -->
+  <div class="modal fade" id="projectDetailModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="projectModalLabel">New project</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="project-name" class="col-form-label">Title:</label>
+              <input type="text" class="form-control" id="project-name" ng-model="newProject.title"
+                placeholder="Enter project title">
+            </div>
+            <div class="mb-3">
+              <label for="project-description" class="col-form-label">Description:</label>
+              <textarea class="form-control" id="project-description" ng-model="newProject.description"
+                placeholder="Enter project description"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" ng-if="!modalData.isUpdate" ng-click="createProject()">Create
+            new
+            project</button>
+          <button type="button" class="btn btn-primary" ng-if="modalData.isUpdate" ng-click="updateProject()">Update
+            project</button>
         </div>
       </div>
     </div>
