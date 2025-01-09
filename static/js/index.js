@@ -23,19 +23,7 @@ app.controller('todoController', function($scope, $http) {
         });
     }
 
-    $scope.showModalCreateNewTodo = function(project) {
-        $scope.newTodo = {
-            title: '',
-            note: '',
-        };
-        $scope.modalData = {
-            project: project,
-            isUpdate: false
-        }
-        todoDetailModal.show();
-    }
-
-    $scope.createTodo = function() {
+    const createTodo = function() {
         const todo = {
             title: $scope.newTodo.title,
             note: $scope.newTodo.note,
@@ -48,25 +36,39 @@ app.controller('todoController', function($scope, $http) {
         });
     }
 
+    $scope.showModalCreateNewTodo = function(project) {
+        $scope.newTodo = {
+            title: '',
+            note: '',
+        };
+        $scope.modalData = {
+            project: project,
+            isUpdate: false,
+            submitFunction: createTodo
+        }
+        todoDetailModal.show();
+    }
+
     $scope.changeStatus = function(todo) {
         todo.completed = !todo.completed;
         $http.put(`${todoAPIURL}/${todo.id}/`, todo).then(function(_) {});
+    }
+
+    const updateTodo = function() {
+        $http.put(`${todoAPIURL}/${$scope.newTodo.id}/`, $scope.newTodo).then(function(_) {
+            $scope.loadProjectTodo($scope.modalData.project);
+            todoDetailModal.hide();
+        });
     }
 
     $scope.showModalEditTodo = function(todo, project) {
         $scope.newTodo = angular.copy(todo);
         $scope.modalData = {
             project: project,
-            isUpdate: true
+            isUpdate: true,
+            submitFunction: updateTodo
         }
         todoDetailModal.show();
-    }
-
-    $scope.updateTodo = function() {
-        $http.put(`${todoAPIURL}/${$scope.newTodo.id}/`, $scope.newTodo).then(function(_) {
-            $scope.loadProjectTodo($scope.modalData.project);
-            todoDetailModal.hide();
-        });
     }
 
     $scope.deleteTodo = function(todo, project) {
@@ -75,19 +77,7 @@ app.controller('todoController', function($scope, $http) {
         });
     }
 
-    $scope.showModalCreateNewProject = function() {
-        console.log('showModalCreateNewProject pressed');
-        $scope.newProject = {
-            title: '',
-            description: '',
-        };
-        $scope.modalData = {
-            isUpdate: false
-        }
-        projectDetailModal.show();
-    }
-
-    $scope.createProject = function() {
+    const createProject = function() {
         const project = {
             title: $scope.newProject.title,
             description: $scope.newProject.description,
@@ -99,19 +89,34 @@ app.controller('todoController', function($scope, $http) {
         });
     }
 
-    $scope.showModalEditProject = function(project) {
-        $scope.newProject = angular.copy(project);
+    $scope.showModalCreateNewProject = function() {
+        $scope.newProject = {
+            title: '',
+            description: '',
+        };
         $scope.modalData = {
-            isUpdate: true
+            isUpdate: false,
+            submitFunction: createProject,
+            error: {}
         }
         projectDetailModal.show();
     }
 
-    $scope.updateProject = function() {
+    const updateProject = function() {
         $http.put(`${projectAPIURL}/${$scope.newProject.id}/`, $scope.newProject).then(function(_) {
             loadAllProject();
             projectDetailModal.hide();
         });
+    }
+
+    $scope.showModalEditProject = function(project) {
+        $scope.newProject = angular.copy(project);
+        $scope.modalData = {
+            isUpdate: true,
+            submitFunction: updateProject,
+            error: {}
+        }
+        projectDetailModal.show();
     }
 
     $scope.deleteProject = function(project) {

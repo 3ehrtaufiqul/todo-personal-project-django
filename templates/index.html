@@ -42,8 +42,10 @@
         {{activeFilter.title}}
         <i class="bi bi-x-lg"></i>
       </button>
-      <input class="rounded" type="search" placeholder="Search" aria-label="Search" ng-model="activeFilter.searchTitleInput" ng-if="!activeFilter.title">
-      <button type="button" class="btn btn-outline-success ms-2" ng-click="applyFilter()" ng-if="!activeFilter.title">Search</button>
+      <input class="rounded" type="search" placeholder="Search" aria-label="Search"
+        ng-model="activeFilter.searchTitleInput" ng-if="!activeFilter.title">
+      <button type="button" class="btn btn-outline-success ms-2" ng-click="applyFilter()"
+        ng-if="!activeFilter.title">Search</button>
       <button type="button" class="btn btn-primary ms-auto" ng-click="showModalCreateNewProject()">Create New
         Project</button>
     </div>
@@ -106,33 +108,33 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="todoModalLabel">New task</h1>
+          <h1 class="modal-title fs-5" id="todoModalLabel">
+            {{modalData.isUpdate ? 'Edit Task' : 'Create New Task'}}
+          </h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="col-form-label">Project:</label>
-            <p ng-bind="modalData.project.title"></p>
-          </div>
-          <form>
+        <form name="todoForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="col-form-label">Project:</label>
+              <p ng-bind="modalData.project.title"></p>
+            </div>
             <div class="mb-3">
               <label for="task-name" class="col-form-label">Title:</label>
               <input type="text" class="form-control" id="task-name" ng-model="newTodo.title"
-                placeholder="Enter task title">
+                placeholder="Enter task title" required>
             </div>
             <div class="mb-3">
               <label for="task-note" class="col-form-label">Note:</label>
               <textarea class="form-control" id="task-note" ng-model="newTodo.note"
                 placeholder="Enter task note"></textarea>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" ng-if="!modalData.isUpdate" ng-click="createTodo()">Create new
-            task</button>
-          <button type="button" class="btn btn-primary" ng-if="modalData.isUpdate" ng-click="updateTodo()">Update
-            task</button>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success"
+              ng-click="todoForm.$valid && modalData.submitFunction()">{{modalData.isUpdate ? 'Update task' : 'Create new task'}}</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -142,30 +144,30 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="projectModalLabel">New project</h1>
+          <h1 class="modal-title fs-5" id="projectModalLabel">
+            {{modalData.isUpdate ? 'Update project' : 'New project'}}
+          </h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <form>
+        <form name="projectForm">
+          <div class="modal-body">
             <div class="mb-3">
               <label for="project-name" class="col-form-label">Title:</label>
               <input type="text" class="form-control" id="project-name" ng-model="newProject.title"
-                placeholder="Enter project title">
+                placeholder="Enter project title" required>
+                <div class="invalid-feedback">This title has been used, please chose another one.</div>
             </div>
             <div class="mb-3">
               <label for="project-description" class="col-form-label">Description:</label>
               <textarea class="form-control" id="project-description" ng-model="newProject.description"
                 placeholder="Enter project description"></textarea>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" ng-if="!modalData.isUpdate" ng-click="createProject()">Create
-            new
-            project</button>
-          <button type="button" class="btn btn-primary" ng-if="modalData.isUpdate" ng-click="updateProject()">Update
-            project</button>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success"
+              ng-click="projectForm.$valid && modalData.submitFunction()">{{modalData.isUpdate ? 'Update project' : 'Create new project'}}</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
