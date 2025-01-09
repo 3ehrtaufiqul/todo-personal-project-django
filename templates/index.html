@@ -153,9 +153,9 @@
           <div class="modal-body">
             <div class="mb-3">
               <label for="project-name" class="col-form-label">Title:</label>
-              <input type="text" class="form-control" id="project-name" ng-model="newProject.title"
+              <input type="text" class="form-control {{modalData.error.title ? 'is-invalid' : ''}}" id="project-name" aria-describedby="project-name-feedback" ng-model="newProject.title"
                 placeholder="Enter project title" required>
-                <div class="invalid-feedback">This title has been used, please chose another one.</div>
+                <div id="project-name-feedback" class="invalid-feedback">{{modalData.error.title}}</div>
             </div>
             <div class="mb-3">
               <label for="project-description" class="col-form-label">Description:</label>

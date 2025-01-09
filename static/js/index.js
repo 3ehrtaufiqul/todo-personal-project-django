@@ -83,9 +83,19 @@ app.controller('todoController', function($scope, $http) {
             description: $scope.newProject.description,
         }
 
-        $http.post(projectAPIURL + '/', project).then(function(_) {
-            loadAllProject();
-            projectDetailModal.hide();
+        $http.post(projectAPIURL + '/', project).then(
+            function(_) {
+                loadAllProject();
+                projectDetailModal.hide();
+        })
+        .catch(function(errorResponse) {
+            switch (errorResponse.status) {
+                case 400:
+                    $scope.modalData.error.title = errorResponse.data[0];
+                    break;
+                default:
+                    console.error(errorResponse);
+            }
         });
     }
 
@@ -106,6 +116,15 @@ app.controller('todoController', function($scope, $http) {
         $http.put(`${projectAPIURL}/${$scope.newProject.id}/`, $scope.newProject).then(function(_) {
             loadAllProject();
             projectDetailModal.hide();
+        })
+        .catch(function(errorResponse) {
+            switch (errorResponse.status) {
+                case 400:
+                    $scope.modalData.error.title = errorResponse.data[0];
+                    break;
+                default:
+                    console.error(errorResponse);
+            }
         });
     }
 

@@ -41,6 +41,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
             raise ValidationError('Project with this title already exists.')
         serializer.save()
 
+    def perform_update(self, serializer):
+        queryset = Project.objects.filter(title=serializer.validated_data['title']).exclude(pk=self.get_object().pk)
+        if queryset.exists():
+            raise ValidationError('Project with this title already exists.')
+        serializer.save()
+
 class TodoViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Todo.objects.all()
