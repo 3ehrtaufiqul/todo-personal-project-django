@@ -5,6 +5,10 @@ app.controller('todoController', function($scope, $http) {
 
     const todoDetailModal = new bootstrap.Modal(document.getElementById('todoDetailModal'), {});
     const projectDetailModal = new bootstrap.Modal(document.getElementById('projectDetailModal'), {});
+    $scope.activeFilter = {
+        searchTitleInput: '',
+        title: '',
+    };
 
     const loadAllProject = function() {
         $http.get(projectAPIURL).then(function(response) {
@@ -114,6 +118,22 @@ app.controller('todoController', function($scope, $http) {
         $http.delete(`${projectAPIURL}/${project.id}/`).then(function(_) {
             loadAllProject();
         });
+    }
+
+    $scope.applyFilter = function() {
+        if ($scope.activeFilter.searchTitleInput === '') {
+            return;
+        }
+        $scope.activeFilter.title = $scope.activeFilter.searchTitleInput;
+        $http.get(`${projectAPIURL}/filter`, {params: {title: $scope.activeFilter.title}}).then(function(response) {
+            $scope.projectList = response.data;
+        });
+    }
+
+    $scope.clearFilter = function() {
+        $scope.activeFilter.searchTitleInput = '';
+        $scope.activeFilter.title = '';
+        loadAllProject();
     }
 
 });
