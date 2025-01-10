@@ -1,8 +1,12 @@
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from xhtml2pdf import pisa
 
 from api.serializers import ProjectSerializer, TodoSerializer
 
@@ -46,6 +50,16 @@ class ProjectViewSet(viewsets.ModelViewSet):
         if queryset.exists():
             raise ValidationError('Project with this title already exists.')
         serializer.save()
+
+    @action(detail=False, methods=['get'])
+    def report(self, request):
+        project_list = Project.objects.all()
+        context = {'project_list': project_list}
+        html = render_to_string('project_report.html', context)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="project_report.pdf"'
+        pisa.CreatePDF(html, dest=response)
+        return response
 
 class TodoViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticatedOrReadOnly]

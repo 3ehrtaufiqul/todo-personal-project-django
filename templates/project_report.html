@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Report</title>
+  <style>
+    body{
+      font-family: 'Times New Roman', Times, serif;
+    }
+    table {
+      border: 1px solid black;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 3px;
+    }
+    th {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1 style="text-align: center;">Project Report</h1>
+  </header>
+  <main>
+    {% for project in project_list %}
+    <section>
+      <h2>{{ project.title }}</h2>
+      <p>{{ project.description }}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Task</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for todo in project.todos.all %}
+          <tr>
+            <td>{{ todo.id }}</td>
+            <td>{{ todo.title }}</td>
+            <td>{% if todo.completed %}Finished{% else %}Not Finished{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endfor %}
+  </main>
+</body>
+
+</html>

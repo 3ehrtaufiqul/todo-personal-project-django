@@ -160,4 +160,29 @@ app.controller('todoController', function($scope, $http) {
         loadAllProject();
     }
 
+    $scope.exportProjectToPDF = function() {
+        $http.get(`${projectAPIURL}/report`, {responseType: 'blob'}).then(function(response) {
+        // Create a new Blob object using the response data
+        const file = new Blob([response.data], { type: 'application/pdf' });
+
+        // Create a temporary URL for the Blob object
+        const fileURL = URL.createObjectURL(file);
+
+        // Create a temporary anchor element
+        const a = document.createElement('a');
+        a.href = fileURL;
+        a.download = 'project_report.pdf'; // The filename for the downloaded file
+
+        // Append the anchor to the document (not required but recommended)
+        document.body.appendChild(a);
+
+        // Programmatically click the anchor to trigger the download
+        a.click();
+
+        // Clean up by removing the anchor and revoking the object URL
+        document.body.removeChild(a);
+        URL.revokeObjectURL(fileURL);
+        });
+    }
+
 });
